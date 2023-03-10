@@ -11,9 +11,12 @@ urls = []  # empty list to store URLs
 # Please respect the work and do not change the name
 # All about the version. If there is a change in the code that was created by anyone other than "DCodicis" then do not change the version
 name = "DCodicis"
-vertion = "1.0.0"
+vertion = "1.0.1"
 
-
+# create last_filename.txt file if it doesn't exist
+if not os.path.exists("last_filename.txt"):
+    with open("last_filename.txt", "w") as f:
+        f.write("URL List.txt")
 
 # print program title
 def printTitle():
@@ -28,6 +31,11 @@ def clearScreen():
 clearScreen()
 printTitle()
 
+# create last_filename.txt file if it doesn't exist
+if not os.path.exists("last_filename.txt"):
+    with open("last_filename.txt", "w") as f:
+        f.write("URL List.txt")
+
 # read last filename from file
 last_filename_file = "last_filename.txt"
 if os.path.exists(last_filename_file):
@@ -35,6 +43,31 @@ if os.path.exists(last_filename_file):
         filename = f.read().strip()
 else:
     filename = "URL List.txt"
+
+# read all filenames from all_files.txt and filter out any that don't exist
+all_files = []
+if os.path.exists("all_files.txt"):
+    with open("all_files.txt", "r") as f:
+        for line in f:
+            file_name = line.strip()
+            if os.path.exists(file_name):
+                all_files.append(file_name)
+else:
+    open("all_files.txt", "w").close()
+
+# check if the most recent filename in last_filename.txt exists in all_files.txt and add it if it doesn't exist
+with open(last_filename_file, "r") as f:
+    recent_filename = f.readlines()[-1].strip()
+
+if recent_filename not in all_files:
+    all_files.append(recent_filename)
+
+with open("all_files.txt", "w") as f:
+    for file_name in all_files:
+        f.write(f"{file_name}\n")
+
+# define a variable named file
+file = None
 
 while True:
     try:
@@ -69,23 +102,26 @@ while True:
                         print(Style.BRIGHT + Fore.RED + f"\n{filename} file not found!\n")
                     break
         else:
+            clearScreen()
+            printTitle()
             filename = "URL List.txt"
             print(Style.BRIGHT + Fore.YELLOW + "Using default filename 'URL List.txt'.\n")
-            break
 
 
 
 
 while True:
     # display menu options
+    print(Style.BRIGHT +"\nYou are in: " + Fore.YELLOW+ filename)
     print(Style.BRIGHT + "\nMENU:\n")
     print(Style.BRIGHT + Fore.CYAN + "1. Add URL")
     print(Style.BRIGHT + Fore.CYAN + "2. Add New URL List")
     print(Style.BRIGHT + Fore.CYAN + "3. Remove URL")
     print(Style.BRIGHT + Fore.CYAN + "4. Show All URLs")
-    print(Style.BRIGHT + Fore.CYAN + "5. Exit\n")
+    print(Style.BRIGHT + Fore.CYAN + "5. Change URL List")
+    print(Style.BRIGHT + Fore.CYAN + "6. Exit\n")
 
-    choice = input(Style.BRIGHT + "Enter your choice (1-4): ")
+    choice = input(Style.BRIGHT + "Enter your choice (1-5): ")
     print()
 
     if choice == "1":
